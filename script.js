@@ -130,10 +130,8 @@ fillToggle.addEventListener('change', (e) => {
     currentStyle = isFilled ? 'rounded' : 'outlined';
     allIcons = isFilled ? filledIcons : outlinedIcons;
 
-    const styleName = isFilled ? 'filled' : 'outlined';
-    searchInput.placeholder = `Search ${allIcons.length} ${styleName} icons`;
-
-    handleSearch();
+    performSearch(searchInput.value);
+    updateUrl();
 });
 
 densityControl.addEventListener('click', (e) => {
@@ -169,6 +167,8 @@ themeToggleContainer.addEventListener('click', () => {
     const wasLightDefault = activeColor === defaultLightColor;
     const wasDarkDefault = activeColor === defaultDarkColor;
 
+    // Only switch to the new theme's default color if the active color
+    // was one of the old theme's default colors.
     if (wasLightDefault || wasDarkDefault) {
         activeColor = isDarkMode ? defaultDarkColor : defaultLightColor;
     }
@@ -177,8 +177,22 @@ themeToggleContainer.addEventListener('click', () => {
     applyColors();
 });
 
-searchInput.addEventListener('input', handleSearch);
+function debounce(func, delay) {
+    let timeout;
+    return function(...args) {
+        const context = this;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(context, args), delay);
+    };
+}
+const debouncedUpdateUrl = debounce(updateUrl, 1000);
+
+searchInput.addEventListener('input', () => {
+    performSearch(searchInput.value);
+    debouncedUpdateUrl();
+});
 deselectAllBtn.addEventListener('click', deselectAllIcons);
+
 
 helpBtn.addEventListener('click', () => {
     helpDialog.classList.add('visible');
@@ -354,6 +368,7 @@ function setupLazyLoadObserver() {
 }
 
 function performSearch(searchTerm) {
+    searchTerm = searchTerm.toLowerCase().trim();
     let filteredIcons = [];
     if (searchTerm.includes(',')) {
         const searchTerms = searchTerm.split(',').map(t => t.trim().replace(/ /g, '_')).filter(Boolean);
@@ -376,13 +391,12 @@ function performSearch(searchTerm) {
     displayIcons(filteredIcons);
 }
 
-function handleSearch() {
+function updateUrl() {
     const searchTerm = searchInput.value.toLowerCase().trim();
     const newUrl = searchTerm 
         ? `${window.location.pathname}?search=${encodeURIComponent(searchTerm)}`
         : window.location.pathname;
     history.pushState({ searchTerm }, '', newUrl);
-    performSearch(searchTerm);
 }
 
 function handleShiftSelection(currentIconName) {
