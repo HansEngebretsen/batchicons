@@ -21,6 +21,10 @@ const weightValue = document.getElementById('weight-value');
 const sizeSlider = document.getElementById('size-slider');
 const sizeValue = document.getElementById('size-value');
 const densityControl = document.getElementById('density-control');
+const helpBtn = document.getElementById('help-btn');
+const helpDialog = document.getElementById('help-dialog');
+const closeHelpBtn = document.getElementById('close-help-btn');
+const toast = document.getElementById('toast');
 
 let completeIconList = [];
 let outlinedIcons = [];
@@ -83,7 +87,7 @@ function createSwatch(color, onClick) {
 // --- Event Listeners ---
 
 colorPickerInput.addEventListener('change', (e) => {
-    const newColor = e.target..value;
+    const newColor = e.target.value;
     if (!colorSwatches.includes(newColor)) colorSwatches.push(newColor);
     localStorage.setItem('colorSwatches', JSON.stringify(colorSwatches));
     activeColor = newColor;
@@ -160,7 +164,15 @@ sizeSlider.addEventListener('input', (e) => {
 
 themeToggleContainer.addEventListener('click', () => {
     document.body.classList.toggle('dark-mode');
-    activeColor = document.body.classList.contains('dark-mode') ? defaultDarkColor : defaultLightColor;
+    
+    const isDarkMode = document.body.classList.contains('dark-mode');
+    const wasLightDefault = activeColor === defaultLightColor;
+    const wasDarkDefault = activeColor === defaultDarkColor;
+
+    if (wasLightDefault || wasDarkDefault) {
+        activeColor = isDarkMode ? defaultDarkColor : defaultLightColor;
+    }
+    
     renderColorPicker();
     applyColors();
 });
@@ -168,30 +180,40 @@ themeToggleContainer.addEventListener('click', () => {
 searchInput.addEventListener('input', handleSearch);
 deselectAllBtn.addEventListener('click', deselectAllIcons);
 
+helpBtn.addEventListener('click', () => {
+    helpDialog.classList.add('visible');
+});
+
+closeHelpBtn.addEventListener('click', () => {
+    helpDialog.classList.remove('visible');
+});
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'd' && selectedIcons.size > 0) {
+        downloadBtn.click();
+    }
+    if (e.key === 'c' && selectedIcons.size > 0) {
+        copyBtn.click();
+    }
+    if (e.key === 'Escape') {
+        if (helpDialog.classList.contains('visible')) {
+            helpDialog.classList.remove('visible');
+        } else {
+            searchInput.blur();
+        }
+    }
+    if (e.key === '/' && document.activeElement !== searchInput) {
+        e.preventDefault();
+        searchInput.focus();
+    }
+});
+
 // --- SVG & Data Handling ---
 
-function getSubtleBackgroundColor(hex) {
-    if (!hex || hex.length < 4) return 'rgba(0,0,0,0.1)';
-    let r = parseInt(hex.slice(1, 3), 16);
-    let g = parseInt(hex.slice(3, 5), 16);
-    let b = parseInt(hex.slice(5, 7), 16);
-    return `rgba(${r}, ${g}, ${b}, 0.1)`;
-}
-
 function applyColors() {
-    const isDefaultColor = activeColor === defaultLightColor || activeColor === defaultDarkColor;
-    
-    // Apply color to SVGs
     iconGrid.querySelectorAll('.icon-container svg').forEach(svg => {
         svg.style.fill = activeColor;
     });
-
-    // Apply subtle background to the body
-    if (!isDefaultColor) {
-        document.body.style.backgroundColor = getSubtleBackgroundColor(activeColor);
-    } else {
-        document.body.style.backgroundColor = ''; // Revert to stylesheet color
-    }
 }
 
 function processSvgContent(content) {
@@ -203,19 +225,13 @@ function processSvgContent(content) {
 }
 
 async function getIconData(iconName, weight, style) {
-    // First, try the requested weight and style.
     let res = await fetch(`processed-icons/${weight}/${style}/${iconName}.json`);
-
-    // If that fails, try the default weight (400) for the same style.
     if (!res.ok) {
         res = await fetch(`processed-icons/400/${style}/${iconName}.json`);
     }
-
-    // If the requested style is still not found, we stop and return nothing.
     if (!res.ok) {
         return null;
     }
-
     return res.json();
 }
 
@@ -247,13 +263,23 @@ downloadBtn.addEventListener('click', async () => {
     }
 });
 
+function showToast(message) {
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 2500);
+}
+
 copyBtn.addEventListener('click', async () => {
     const promises = Array.from(selectedIcons).map(async iconName => {
         const icon = await getIconData(iconName, currentWeight, currentStyle);
         return processSvgContent(icon.content);
     });
     const results = await Promise.all(promises);
-    navigator.clipboard.writeText(results.join('\n')).then(() => alert('SVGs copied!'));
+    navigator.clipboard.writeText(results.join('\n')).then(() => {
+        showToast('Copied SVGs!');
+    });
 });
 
 // --- Core Display & Selection Logic ---
@@ -299,7 +325,7 @@ function loadMoreIcons() {
                     iconContainer.classList.add('selected');
                 }
             } else {
-                iconContainer.remove(); // Remove container if icon data is not found
+                iconContainer.remove();
             }
         });
 
@@ -461,7 +487,6 @@ function initialize() {
             outlinedIcons = completeIconList.filter(icon => !icon.name.endsWith('-fill'));
             filledIcons = completeIconList.filter(icon => icon.name.endsWith('-fill'));
 
-            // Default to outlined
             allIcons = outlinedIcons;
             fillToggle.checked = false;
             currentStyle = 'outlined';

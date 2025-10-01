@@ -10,11 +10,10 @@
 <body>
     <header>
         <div class="header-left">
-            <svg class="logo" width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" fill="currentColor"/>
-                <path d="M12 12m-6 0a6 6 0 1 0 12 0a6 6 0 1 0 -12 0" fill="currentColor"/>
-            </svg>
-             <a href="https://fonts.google.com/icons" target="_blank" class="header-link">Material Icons</a>
+            <div class="site-title">
+                <h1>Much Icon</h1>
+                <p>Bulk Material icons</p>
+            </div>
             <div class="search-container">
                 <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                     <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="currentColor"/>
@@ -38,9 +37,15 @@
                     <div class="settings-section">
                         <label for="density-toggle" class="fill-label">Density</label>
                         <div class="segmented-control" id="density-control">
-                            <button data-density="comfortable" class="active">C</button>
-                            <button data-density="cozy">Z</button>
-                            <button data-density="compact">M</button>
+                            <button data-density="comfortable" class="active" title="Comfortable">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 0 24 24" width="20px"><path d="M4 11h5V5H4v6zm0 7h5v-6H4v6zm6 0h5v-6h-5v6zm6 0h5v-6h-5v6zm-6-7h5V5h-5v6zm6-7v6h5V5h-5z"/></svg>
+                            </button>
+                            <button data-density="cozy" title="Cozy">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 0 24 24" width="20px"><path d="M2 4v16h20V4H2zm2 2h16v5H4V6zm0 12v-5h4v5H4zm6 0v-5h10v5H10z"/></svg>
+                            </button>
+                            <button data-density="compact" title="Compact">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 0 24 24" width="20px"><path d="M3 19h6v-7H3v7zm7 0h12v-7H10v7zM3 5v7h18V5H3z"/></svg>
+                            </button>
                         </div>
                     </div>
                     <div class="settings-section slider-section">
@@ -76,11 +81,46 @@
                 <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
                 <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
             </div>
+            <div class="help-management">
+                <button id="help-btn" class="help-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="currentColor"><path d="M0 0h24v24H0z" fill="none"/><path d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z"/></svg>
+                </button>
+            </div>
         </div>
     </header>
     
-    <main id="icon-grid"></main>
-    <footer id="footer-counter"></footer>
+    <main id="icon-grid" class="density-comfortable"></main>
+    <footer id="footer">
+        <span id="footer-counter"></span>
+        <a href="https://fonts.google.com/icons" target="_blank" class="footer-link">via Google Material Icons</a>
+    </footer>
+
+    <div id="toast" class="toast"></div>
+
+    <div id="help-dialog" class="help-dialog">
+        <div class="help-dialog-content">
+            <button id="close-help-btn" class="close-help-btn">&times;</button>
+            <h2>About</h2>
+            <p>This page is a utility to download Material Icons in bulk.</p>
+            <h2>Keyboard Shortcuts</h2>
+            <table>
+                <tbody>
+                    <tr>
+                        <td><kbd>d</kbd></td>
+                        <td>Download selected icons</td>
+                    </tr>
+                    <tr>
+                        <td><kbd>c</kbd></td>
+                        <td>Copy selected icons</td>
+                    </tr>
+                    <tr>
+                        <td><kbd>esc</kbd></td>
+                        <td>Close this dialog</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
     <div id="selection-bar" class="selection-bar">
         <div class="selection-bar-left">
