@@ -353,8 +353,7 @@ function setupLazyLoadObserver() {
     if (lastIcon) lazyLoadObserver.observe(lastIcon);
 }
 
-function handleSearch() {
-    const searchTerm = searchInput.value.toLowerCase().trim();
+function performSearch(searchTerm) {
     let filteredIcons = [];
     if (searchTerm.includes(',')) {
         const searchTerms = searchTerm.split(',').map(t => t.trim().replace(/ /g, '_')).filter(Boolean);
@@ -375,6 +374,15 @@ function handleSearch() {
         );
     }
     displayIcons(filteredIcons);
+}
+
+function handleSearch() {
+    const searchTerm = searchInput.value.toLowerCase().trim();
+    const newUrl = searchTerm 
+        ? `${window.location.pathname}?search=${encodeURIComponent(searchTerm)}`
+        : window.location.pathname;
+    history.pushState({ searchTerm }, '', newUrl);
+    performSearch(searchTerm);
 }
 
 function handleShiftSelection(currentIconName) {
@@ -491,8 +499,10 @@ function initialize() {
             fillToggle.checked = false;
             currentStyle = 'outlined';
 
-            searchInput.placeholder = `Search ${allIcons.length} outlined icons`;
-            displayIcons(allIcons);
+            const params = new URLSearchParams(window.location.search);
+            const searchTerm = params.get('search') || '';
+            searchInput.value = decodeURIComponent(searchTerm);
+            performSearch(searchTerm);
         });
     
     document.body.addEventListener('click', (e) => {
@@ -500,6 +510,12 @@ function initialize() {
             lastClickedIconName = null;
         }
     }, true);
+
+    window.addEventListener('popstate', (e) => {
+        const searchTerm = (e.state && e.state.searchTerm) ? e.state.searchTerm : '';
+        searchInput.value = searchTerm;
+        performSearch(searchTerm);
+    });
 }
 
 initialize();
