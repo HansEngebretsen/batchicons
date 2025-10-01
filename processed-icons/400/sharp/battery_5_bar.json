@@ -1,0 +1,33 @@
+{
+  "name": "battery_5_bar",
+  "tags": [
+    "80%",
+    "almost full",
+    "bar chart",
+    "battery",
+    "cell",
+    "charge",
+    "charging",
+    "device",
+    "electricity",
+    "electronics",
+    "energy",
+    "five bars",
+    "four bars",
+    "full",
+    "high battery",
+    "indicator",
+    "laptop",
+    "level",
+    "mobile",
+    "phone",
+    "portable",
+    "power",
+    "power source",
+    "rectangle",
+    "rounded rectangle",
+    "status",
+    "tablet"
+  ],
+  "content": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"48\" height=\"48\" viewBox=\"0 -960 960 960\"><path d=\"M280-80v-736h120v-64h160v64h120v736H280Zm60-500h280v-176H340v176Z\"/></svg>"
+}

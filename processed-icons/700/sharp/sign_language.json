@@ -1,0 +1,32 @@
+{
+  "name": "sign_language",
+  "tags": [
+    "accessibility",
+    "asl",
+    "communication",
+    "communication aid",
+    "deaf",
+    "disability",
+    "disabled",
+    "fingers",
+    "gesture",
+    "hand",
+    "hand symbol",
+    "hearing impaired",
+    "international",
+    "interpreter",
+    "interpreting",
+    "language",
+    "linguistic",
+    "non verbal",
+    "palm",
+    "sign",
+    "sign language",
+    "speaking",
+    "speech",
+    "symbol",
+    "translated",
+    "universal"
+  ],
+  "content": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"48\" height=\"48\" viewBox=\"0 -960 960 960\"><path d=\"m646-707-84-242 68-23 114 326 132-119 84 58-122 376q-7 21-16.5 40.5T798-245v-164q0-5-.5-9t-1.5-8l75-238-106 95q-4-7-8.5-14T746-596L646-707ZM399-816l-57-101 62-36 62 107-67 30Zm-46 168-54-9-89-128 59-41 70 102 14 76ZM619-72 141 7l-11-70 484-82q23-3 37-23t14-45v-275L485-689l41 210-442-84 14-70 337 63-38-178 95-41 209 232q18 21 27.5 46t9.5 51v248q0 53-34 92.5T619-72ZM340-198 50-174l-6-72 296-24v72Zm0-159L1-368l3-72 336 11v72Zm162 7Z\"/></svg>"
+}

@@ -1,0 +1,39 @@
+body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 1rem;
+}
+
+header {
+    margin-bottom: 1rem;
+}
+
+#search-index-input {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    box-sizing: border-box;
+}
+
+#icon-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.icon-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem;
+    border: 1px solid #eee;
+    border-radius: 4px;
+}
+
+.icon-name {
+    font-weight: bold;
+}
+
+.icon-tags {
+    color: #555;
+    font-style: italic;
+}

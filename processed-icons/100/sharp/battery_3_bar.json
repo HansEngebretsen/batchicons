@@ -1,0 +1,33 @@
+{
+  "name": "battery_3_bar",
+  "tags": [
+    "50 percent",
+    "bar",
+    "battery",
+    "battery charging",
+    "battery indicator",
+    "battery level",
+    "battery life",
+    "battery status",
+    "cell",
+    "charge",
+    "charging",
+    "device",
+    "energy",
+    "half charged",
+    "half full",
+    "low power",
+    "medium battery",
+    "mobile",
+    "power",
+    "power management",
+    "rectangle",
+    "rounded rectangle",
+    "settings",
+    "status bar",
+    "system status",
+    "three bars",
+    "three segments"
+  ],
+  "content": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"48\" height=\"48\" viewBox=\"0 -960 960 960\"><path d=\"M326-132v-648h90v-48h128v48h90v648H326Zm22-269h264v-358H348v358Z\"/></svg>"
+}

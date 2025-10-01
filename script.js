@@ -1,0 +1,480 @@
+const iconGrid = document.getElementById('icon-grid');
+const searchInput = document.getElementById('search-input');
+const footerCounter = document.getElementById('footer-counter');
+const selectionBar = document.getElementById('selection-bar');
+const selectionCount = document.getElementById('selection-count');
+const deselectAllBtn = document.getElementById('deselect-all-btn');
+const downloadBtn = document.getElementById('download-btn');
+const copyBtn = document.getElementById('copy-btn');
+const themeToggleContainer = document.querySelector('.theme-toggle-container');
+const colorPickerBtn = document.getElementById('color-picker-btn');
+const colorPickerDropdown = document.getElementById('color-picker-dropdown');
+const colorPickerInput = document.getElementById('color-picker-input');
+const swatchContainer = document.getElementById('swatch-container');
+const coolColorsContainer = document.getElementById('cool-colors-container');
+const clearHistoryBtn = document.getElementById('clear-history-btn');
+const settingsBtn = document.getElementById('settings-btn');
+const settingsDropdown = document.getElementById('settings-dropdown');
+const fillToggle = document.getElementById('fill-toggle');
+const weightSlider = document.getElementById('weight-slider');
+const weightValue = document.getElementById('weight-value');
+const sizeSlider = document.getElementById('size-slider');
+const sizeValue = document.getElementById('size-value');
+const densityControl = document.getElementById('density-control');
+
+let completeIconList = [];
+let outlinedIcons = [];
+let filledIcons = [];
+let allIcons = []; // This will be the active list (either outlined or filled)
+let displayedIcons = [];
+let selectedIcons = new Set();
+let lazyLoadObserver;
+const ICONS_PER_PAGE = 100;
+let currentPage = 0;
+let lastClickedIconName = null;
+
+// --- Settings & Colors ---
+let currentStyle = 'outlined'; // Default to outlined
+let currentWeight = '400';
+let currentSize = '48'; // Default size updated to 48px
+
+const COOL_COLORS = ['#1abc9c', '#2ecc71', '#3498db', '#9b59b6', '#34495e', '#f1c40f', '#e67e22', '#e74c3c'];
+const defaultLightColor = '#2a4365';
+const defaultDarkColor = '#a8b2d1';
+let colorSwatches = JSON.parse(localStorage.getItem('colorSwatches')) || [defaultLightColor, defaultDarkColor];
+let activeColor = colorSwatches[0];
+
+function renderColorPicker() {
+    colorPickerBtn.style.backgroundColor = activeColor;
+    swatchContainer.innerHTML = '';
+    colorSwatches.forEach(color => {
+        const swatch = createSwatch(color, () => {
+            activeColor = color;
+            applyColors();
+            renderColorPicker();
+        });
+        if (color === activeColor) swatch.classList.add('selected');
+        swatchContainer.appendChild(swatch);
+    });
+    coolColorsContainer.innerHTML = '';
+    COOL_COLORS.forEach(color => {
+        const swatch = createSwatch(color, () => {
+            if (!colorSwatches.includes(color)) {
+                colorSwatches.push(color);
+                localStorage.setItem('colorSwatches', JSON.stringify(colorSwatches));
+            }
+            activeColor = color;
+            applyColors();
+            renderColorPicker();
+        });
+        if (color === activeColor) swatch.classList.add('selected');
+        coolColorsContainer.appendChild(swatch);
+    });
+}
+
+function createSwatch(color, onClick) {
+    const swatch = document.createElement('div');
+    swatch.classList.add('color-swatch');
+    swatch.style.backgroundColor = color;
+    swatch.addEventListener('click', onClick);
+    return swatch;
+}
+
+// --- Event Listeners ---
+
+colorPickerInput.addEventListener('change', (e) => {
+    const newColor = e.target..value;
+    if (!colorSwatches.includes(newColor)) colorSwatches.push(newColor);
+    localStorage.setItem('colorSwatches', JSON.stringify(colorSwatches));
+    activeColor = newColor;
+    applyColors();
+    renderColorPicker();
+});
+
+clearHistoryBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    colorSwatches = [defaultLightColor, defaultDarkColor];
+    localStorage.setItem('colorSwatches', JSON.stringify(colorSwatches));
+    activeColor = document.body.classList.contains('dark-mode') ? defaultDarkColor : defaultLightColor;
+    renderColorPicker();
+    applyColors();
+});
+
+colorPickerBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    settingsDropdown.classList.remove('visible');
+    colorPickerDropdown.classList.toggle('visible');
+});
+
+settingsBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    colorPickerDropdown.classList.remove('visible');
+    settingsDropdown.classList.toggle('visible');
+});
+
+document.addEventListener('click', (e) => {
+    if (!colorPickerDropdown.contains(e.target) && e.target !== colorPickerBtn) {
+        colorPickerDropdown.classList.remove('visible');
+    }
+    if (!settingsDropdown.contains(e.target) && e.target !== settingsBtn) {
+        settingsDropdown.classList.remove('visible');
+    }
+});
+
+fillToggle.addEventListener('change', (e) => {
+    const isFilled = e.target.checked;
+    currentStyle = isFilled ? 'rounded' : 'outlined';
+    allIcons = isFilled ? filledIcons : outlinedIcons;
+
+    const styleName = isFilled ? 'filled' : 'outlined';
+    searchInput.placeholder = `Search ${allIcons.length} ${styleName} icons`;
+
+    handleSearch();
+});
+
+densityControl.addEventListener('click', (e) => {
+    if (e.target.tagName === 'BUTTON') {
+        const density = e.target.dataset.density;
+        iconGrid.classList.remove('density-comfortable', 'density-cozy', 'density-compact');
+        iconGrid.classList.add(`density-${density}`);
+
+        densityControl.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+        e.target.classList.add('active');
+    }
+});
+
+weightSlider.addEventListener('input', (e) => {
+    currentWeight = e.target.value;
+    weightValue.textContent = currentWeight;
+});
+weightSlider.addEventListener('change', () => displayIcons(displayedIcons));
+
+sizeSlider.addEventListener('input', (e) => {
+    currentSize = e.target.value;
+    sizeValue.textContent = `${currentSize}px`;
+    iconGrid.querySelectorAll('.icon-container svg').forEach(svg => {
+        svg.style.width = `${currentSize}px`;
+        svg.style.height = `${currentSize}px`;
+    });
+});
+
+themeToggleContainer.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+    activeColor = document.body.classList.contains('dark-mode') ? defaultDarkColor : defaultLightColor;
+    renderColorPicker();
+    applyColors();
+});
+
+searchInput.addEventListener('input', handleSearch);
+deselectAllBtn.addEventListener('click', deselectAllIcons);
+
+// --- SVG & Data Handling ---
+
+function getSubtleBackgroundColor(hex) {
+    if (!hex || hex.length < 4) return 'rgba(0,0,0,0.1)';
+    let r = parseInt(hex.slice(1, 3), 16);
+    let g = parseInt(hex.slice(3, 5), 16);
+    let b = parseInt(hex.slice(5, 7), 16);
+    return `rgba(${r}, ${g}, ${b}, 0.1)`;
+}
+
+function applyColors() {
+    const isDefaultColor = activeColor === defaultLightColor || activeColor === defaultDarkColor;
+    
+    // Apply color to SVGs
+    iconGrid.querySelectorAll('.icon-container svg').forEach(svg => {
+        svg.style.fill = activeColor;
+    });
+
+    // Apply subtle background to the body
+    if (!isDefaultColor) {
+        document.body.style.backgroundColor = getSubtleBackgroundColor(activeColor);
+    } else {
+        document.body.style.backgroundColor = ''; // Revert to stylesheet color
+    }
+}
+
+function processSvgContent(content) {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(content, "image/svg+xml");
+    const svgElement = doc.documentElement;
+    svgElement.setAttribute('fill', activeColor);
+    return new XMLSerializer().serializeToString(svgElement);
+}
+
+async function getIconData(iconName, weight, style) {
+    // First, try the requested weight and style.
+    let res = await fetch(`processed-icons/${weight}/${style}/${iconName}.json`);
+
+    // If that fails, try the default weight (400) for the same style.
+    if (!res.ok) {
+        res = await fetch(`processed-icons/400/${style}/${iconName}.json`);
+    }
+
+    // If the requested style is still not found, we stop and return nothing.
+    if (!res.ok) {
+        return null;
+    }
+
+    return res.json();
+}
+
+// --- Action Buttons ---
+
+downloadBtn.addEventListener('click', async () => {
+    if (selectedIcons.size === 1) {
+        const iconName = selectedIcons.values().next().value;
+        const icon = await getIconData(iconName, currentWeight, currentStyle);
+        const coloredSvg = processSvgContent(icon.content);
+        const blob = new Blob([coloredSvg], { type: 'image/svg+xml' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `${icon.name}.svg`;
+        link.click();
+    } else if (selectedIcons.size > 1) {
+        const zip = new JSZip();
+        const promises = Array.from(selectedIcons).map(async iconName => {
+            const icon = await getIconData(iconName, currentWeight, currentStyle);
+            zip.file(`${icon.name}.svg`, processSvgContent(icon.content));
+        });
+        await Promise.all(promises);
+        zip.generateAsync({ type: 'blob' }).then(content => {
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(content);
+            link.download = 'material-icons.zip';
+            link.click();
+        });
+    }
+});
+
+copyBtn.addEventListener('click', async () => {
+    const promises = Array.from(selectedIcons).map(async iconName => {
+        const icon = await getIconData(iconName, currentWeight, currentStyle);
+        return processSvgContent(icon.content);
+    });
+    const results = await Promise.all(promises);
+    navigator.clipboard.writeText(results.join('\n')).then(() => alert('SVGs copied!'));
+});
+
+// --- Core Display & Selection Logic ---
+
+function displayIcons(icons) {
+    iconGrid.innerHTML = '';
+    displayedIcons = icons;
+    currentPage = 0;
+    updateFooterCounter();
+    loadMoreIcons();
+    setupLazyLoadObserver();
+}
+
+function loadMoreIcons() {
+    const start = currentPage * ICONS_PER_PAGE;
+    const end = start + ICONS_PER_PAGE;
+    const iconsToLoad = displayedIcons.slice(start, end);
+
+    if (iconsToLoad.length === 0 && currentPage > 0) {
+        if (lazyLoadObserver) lazyLoadObserver.disconnect();
+        return;
+    }
+
+    iconsToLoad.forEach(icon => {
+        const iconName = icon.name;
+        const iconContainer = document.createElement('div');
+        iconContainer.classList.add('icon-container');
+        iconContainer.dataset.iconName = iconName;
+        
+        iconContainer.innerHTML = `<p>${iconName.replace(/_/g, ' ')}</p>`;
+
+        getIconData(iconName, currentWeight, currentStyle).then(iconData => {
+            if (iconData) {
+                iconContainer.innerHTML = `${iconData.content}<p>${iconData.name}</p>`;
+                const svg = iconContainer.querySelector('svg');
+                if (svg) {
+                    svg.style.width = `${currentSize}px`;
+                    svg.style.height = `${currentSize}px`;
+                    svg.style.fill = activeColor;
+                }
+                if (selectedIcons.has(iconName)) {
+                    addDeselectButton(iconContainer);
+                    iconContainer.classList.add('selected');
+                }
+            } else {
+                iconContainer.remove(); // Remove container if icon data is not found
+            }
+        });
+
+        iconContainer.addEventListener('click', (e) => {
+            if (e.target.classList.contains('deselect-icon-btn')) return;
+            if (e.shiftKey && lastClickedIconName) {
+                handleShiftSelection(iconName);
+            } else {
+                toggleIconSelection(iconName, iconContainer);
+            }
+            lastClickedIconName = iconName;
+        });
+        iconGrid.appendChild(iconContainer);
+    });
+    currentPage++;
+}
+
+function setupLazyLoadObserver() {
+    if (lazyLoadObserver) lazyLoadObserver.disconnect();
+    const options = { root: null, rootMargin: '0px 0px 300px 0px', threshold: 0 };
+    lazyLoadObserver = new IntersectionObserver((entries) => {
+        if (entries[entries.length - 1].isIntersecting) loadMoreIcons();
+    }, options);
+    const lastIcon = iconGrid.querySelector('.icon-container:last-child');
+    if (lastIcon) lazyLoadObserver.observe(lastIcon);
+}
+
+function handleSearch() {
+    const searchTerm = searchInput.value.toLowerCase().trim();
+    let filteredIcons = [];
+    if (searchTerm.includes(',')) {
+        const searchTerms = searchTerm.split(',').map(t => t.trim().replace(/ /g, '_')).filter(Boolean);
+        if (searchTerms.length > 0) {
+            filteredIcons = allIcons.filter(icon => 
+                searchTerms.some(term => 
+                    icon.name.toLowerCase().includes(term) ||
+                    (icon.tags && icon.tags.some(tag => tag.toLowerCase().includes(term)))
+                )
+            );
+        } else {
+            filteredIcons = allIcons;
+        }
+    } else {
+        filteredIcons = allIcons.filter(icon => 
+            icon.name.toLowerCase().includes(searchTerm) || 
+            (icon.tags && icon.tags.some(tag => tag.toLowerCase().includes(searchTerm)))
+        );
+    }
+    displayIcons(filteredIcons);
+}
+
+function handleShiftSelection(currentIconName) {
+    const lastIndex = displayedIcons.findIndex(i => i.name === lastClickedIconName);
+    const currentIndex = displayedIcons.findIndex(i => i.name === currentIconName);
+    if (lastIndex === -1 || currentIndex === -1) return;
+    const start = Math.min(lastIndex, currentIndex);
+    const end = Math.max(lastIndex, currentIndex);
+    const rangeToSelect = displayedIcons.slice(start, end + 1);
+    rangeToSelect.forEach(iconInRange => {
+        if (!selectedIcons.has(iconInRange.name)) {
+            selectedIcons.add(iconInRange.name);
+            const el = iconGrid.querySelector(`[data-icon-name="${iconInRange.name}"]`);
+            if (el) {
+                el.classList.add('selected');
+                addDeselectButton(el);
+            }
+        }
+    });
+    updateSelectionBar(true);
+}
+
+function addDeselectButton(container) {
+    const btn = document.createElement('button');
+    btn.className = 'deselect-icon-btn';
+    btn.innerHTML = '&times;';
+    btn.onclick = (e) => {
+        e.stopPropagation();
+        toggleIconSelection(container.dataset.iconName, container);
+    };
+    container.appendChild(btn);
+}
+
+function toggleIconSelection(iconName, container) {
+    const wasSelected = selectedIcons.has(iconName);
+    if (wasSelected) {
+        selectedIcons.delete(iconName);
+        container.classList.remove('selected');
+        const btn = container.querySelector('.deselect-icon-btn');
+        if (btn) btn.remove();
+    } else {
+        selectedIcons.add(iconName);
+        container.classList.add('selected');
+        addDeselectButton(container);
+    }
+    updateSelectionBar(!wasSelected);
+}
+
+function deselectAllIcons() {
+    selectedIcons.clear();
+    document.querySelectorAll('.icon-container.selected').forEach(container => {
+        container.classList.remove('selected');
+        const btn = container.querySelector('.deselect-icon-btn');
+        if (btn) btn.remove();
+    });
+    updateSelectionBar(false);
+}
+
+function updateSelectionBar(isCountingUp) {
+    const count = selectedIcons.size;
+    const oldCount = parseInt(selectionCount.dataset.count || '0');
+    if (count === 0) {
+        selectionBar.classList.remove('visible');
+        return;
+    }
+    if (!selectionBar.classList.contains('visible')) {
+        selectionBar.classList.add('visible');
+    }
+    const newText = `${count} icon${count > 1 ? 's' : ''} selected`;
+    if (count !== oldCount) {
+        const animationClass = isCountingUp ? 'counting-up' : 'counting-down';
+        selectionCount.classList.add(animationClass);
+        setTimeout(() => {
+            selectionCount.textContent = newText;
+            selectionCount.dataset.count = count;
+            selectionCount.classList.remove(animationClass);
+        }, 150);
+    }
+}
+
+function updateFooterCounter() {
+    footerCounter.textContent = `${displayedIcons.length} / ${allIcons.length} icons`;
+}
+
+// --- Initial Load ---
+
+function initialize() {
+    if (!colorSwatches.includes(defaultLightColor)) colorSwatches.unshift(defaultLightColor);
+    if (!colorSwatches.includes(defaultDarkColor)) colorSwatches.push(defaultDarkColor);
+    
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark-mode');
+        activeColor = defaultDarkColor;
+    } else {
+        activeColor = defaultLightColor;
+    }
+    
+    weightSlider.value = currentWeight;
+    weightValue.textContent = currentWeight;
+    sizeSlider.value = currentSize;
+    sizeValue.textContent = `${currentSize}px`;
+
+    renderColorPicker();
+    applyColors();
+
+    fetch('manifest.json')
+        .then(response => response.json())
+        .then(data => {
+            completeIconList = data;
+            outlinedIcons = completeIconList.filter(icon => !icon.name.endsWith('-fill'));
+            filledIcons = completeIconList.filter(icon => icon.name.endsWith('-fill'));
+
+            // Default to outlined
+            allIcons = outlinedIcons;
+            fillToggle.checked = false;
+            currentStyle = 'outlined';
+
+            searchInput.placeholder = `Search ${allIcons.length} outlined icons`;
+            displayIcons(allIcons);
+        });
+    
+    document.body.addEventListener('click', (e) => {
+        if (!iconGrid.contains(e.target)) {
+            lastClickedIconName = null;
+        }
+    }, true);
+}
+
+initialize();
