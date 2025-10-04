@@ -186,11 +186,25 @@ function debounce(func, delay) {
     };
 }
 const debouncedUpdateUrl = debounce(updateUrl, 1000);
+const clearSearchBtn = document.getElementById('clear-search-btn');
 
 searchInput.addEventListener('input', () => {
     performSearch(searchInput.value);
     debouncedUpdateUrl();
+    if (searchInput.value.length > 0) {
+        searchInput.parentElement.classList.add('has-text');
+    } else {
+        searchInput.parentElement.classList.remove('has-text');
+    }
 });
+
+clearSearchBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    performSearch('');
+    searchInput.parentElement.classList.remove('has-text');
+    searchInput.focus();
+});
+
 searchInput.addEventListener('keydown', (e) => {
     if (e.key === 'Tab' && !e.shiftKey) {
         e.preventDefault();
@@ -410,20 +424,12 @@ function setupLazyLoadObserver() {
     const options = { root: null, rootMargin: '0px 0px 300px 0px', threshold: 0 };
     lazyLoadObserver = new IntersectionObserver((entries) => {
         if (entries[entries.length - 1].isIntersecting) {
-            document.getElementById('keyboard-shortcuts').classList.add('hidden');
             loadMoreIcons();
         }
     }, options);
     const lastIcon = iconGrid.querySelector('.icon-container:last-child');
     if (lastIcon) {
         lazyLoadObserver.observe(lastIcon);
-    }
-
-    // Show shortcuts if the content is not scrollable
-    if (iconGrid.scrollHeight <= window.innerHeight) {
-        document.getElementById('keyboard-shortcuts').classList.remove('hidden');
-    } else {
-        document.getElementById('keyboard-shortcuts').classList.add('hidden');
     }
 }
 
@@ -606,6 +612,18 @@ function initialize() {
             behavior: 'smooth'
         });
     });
+
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js')
+                .then(registration => {
+                    console.log('Service Worker registered with scope:', registration.scope);
+                })
+                .catch(error => {
+                    console.error('Service Worker registration failed:', error);
+                });
+        });
+    }
 }
 
 initialize();

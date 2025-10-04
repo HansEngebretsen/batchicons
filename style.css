@@ -102,6 +102,36 @@ header {
     position: relative;
     width: 100%;
     max-width: 720px;
+    border-radius: 24px;
+    transition: box-shadow 0.2s ease;
+}
+
+.search-container:focus-within {
+    box-shadow: 0 0 0 2px var(--selected-border);
+}
+
+.clear-search-btn {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: none;
+    color: var(--search-placeholder);
+    cursor: pointer;
+    font-size: 1.5rem;
+    line-height: 1;
+    padding: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+}
+
+.search-container.has-text .clear-search-btn {
+    opacity: 1;
+    pointer-events: auto;
 }
 
 .search-icon {
@@ -616,10 +646,6 @@ body.dark-mode #moon-icon { display: block; }
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
     font-family: monospace;
-}
-
-.hidden {
-    display: none;
 }
 
 
