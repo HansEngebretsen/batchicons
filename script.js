@@ -262,20 +262,31 @@ closeHelpBtn.addEventListener('click', () => {
 });
 
 document.addEventListener('keydown', (e) => {
-    if (e.key === 'd' && selectedIcons.size > 0) {
-        downloadBtn.click();
-    }
-    if (e.key === 'c' && selectedIcons.size > 0) {
-        copyBtn.click();
-    }
+    const activeElement = document.activeElement;
+    const isTextInput = activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA' || activeElement.isContentEditable;
+
+    // Escape key should always work
     if (e.key === 'Escape') {
         if (selectedIcons.size > 0) {
             deselectAllIcons();
         } else if (helpDialog.classList.contains('visible')) {
             helpDialog.classList.remove('visible');
-        } else {
-            searchInput.blur();
+        } else if (isTextInput) {
+            activeElement.blur();
         }
+        return; // Stop further processing for Escape
+    }
+
+    // Other shortcuts should be disabled in text inputs
+    if (isTextInput) {
+        return;
+    }
+
+    if (e.key === 'd' && selectedIcons.size > 0) {
+        downloadBtn.click();
+    }
+    if (e.key === 'c' && selectedIcons.size > 0) {
+        copyBtn.click();
     }
     if (e.key === '/' && document.activeElement !== searchInput) {
         e.preventDefault();
