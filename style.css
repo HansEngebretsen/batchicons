@@ -605,6 +605,24 @@ body.dark-mode #moon-icon { display: block; }
     text-decoration: underline;
 }
 
+.keyboard-shortcuts {
+    display: flex;
+    gap: 1.5rem;
+    color: var(--search-placeholder);
+}
+
+.keyboard-shortcuts kbd {
+    background-color: var(--search-background);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-family: monospace;
+}
+
+.hidden {
+    display: none;
+}
+
+
 .selection-bar {
     position: fixed;
     bottom: 2rem;
@@ -678,4 +696,40 @@ body.dark-mode #moon-icon { display: block; }
 
 .action-btn svg {
     fill: var(--text-color);
+}
+
+#back-to-top-btn {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 50px;
+    height: 50px;
+    background-color: var(--button-background);
+    color: var(--button-text);
+    border: none;
+    border-radius: 50%;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: opacity 0.3s, visibility 0.3s, transform 0.3s, bottom 0.3s;
+    z-index: 101;
+}
+
+.selection-bar.visible ~ #back-to-top-btn {
+    bottom: 6.5rem; /* Move up to avoid selection bar */
+}
+
+#back-to-top-btn.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+#back-to-top-btn:hover {
+    background-color: var(--search-background);
 }

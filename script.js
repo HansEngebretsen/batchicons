@@ -191,6 +191,51 @@ searchInput.addEventListener('input', () => {
     performSearch(searchInput.value);
     debouncedUpdateUrl();
 });
+searchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Tab' && !e.shiftKey) {
+        e.preventDefault();
+        const firstIcon = iconGrid.querySelector('.icon-container');
+        if (firstIcon) {
+            firstIcon.focus();
+        }
+    }
+});
+
+iconGrid.addEventListener('keydown', (e) => {
+    const activeElement = document.activeElement;
+    if (!activeElement.classList.contains('icon-container')) return;
+
+    let newIndex;
+    const currentIndex = Array.from(iconGrid.children).indexOf(activeElement);
+    const itemsPerRow = Math.floor(iconGrid.clientWidth / activeElement.offsetWidth);
+
+    switch (e.key) {
+        case 'ArrowRight':
+            newIndex = currentIndex + 1;
+            break;
+        case 'ArrowLeft':
+            newIndex = currentIndex - 1;
+            break;
+        case 'ArrowDown':
+            newIndex = currentIndex + itemsPerRow;
+            break;
+        case 'ArrowUp':
+            newIndex = currentIndex - itemsPerRow;
+            break;
+        case 'Enter':
+        case ' ':
+            e.preventDefault();
+            toggleIconSelection(activeElement.dataset.iconName, activeElement);
+            return;
+        default:
+            return;
+    }
+
+    if (newIndex >= 0 && newIndex < iconGrid.children.length) {
+        iconGrid.children[newIndex].focus();
+    }
+});
+
 deselectAllBtn.addEventListener('click', deselectAllIcons);
 
 
@@ -210,7 +255,9 @@ document.addEventListener('keydown', (e) => {
         copyBtn.click();
     }
     if (e.key === 'Escape') {
-        if (helpDialog.classList.contains('visible')) {
+        if (selectedIcons.size > 0) {
+            deselectAllIcons();
+        } else if (helpDialog.classList.contains('visible')) {
             helpDialog.classList.remove('visible');
         } else {
             searchInput.blur();
@@ -304,7 +351,6 @@ function displayIcons(icons) {
     currentPage = 0;
     updateFooterCounter();
     loadMoreIcons();
-    setupLazyLoadObserver();
 }
 
 function loadMoreIcons() {
@@ -322,6 +368,7 @@ function loadMoreIcons() {
         const iconContainer = document.createElement('div');
         iconContainer.classList.add('icon-container');
         iconContainer.dataset.iconName = iconName;
+        iconContainer.tabIndex = 0;
         
         iconContainer.innerHTML = `<p>${iconName.replace(/_/g, ' ')}</p>`;
 
@@ -355,16 +402,29 @@ function loadMoreIcons() {
         iconGrid.appendChild(iconContainer);
     });
     currentPage++;
+    setupLazyLoadObserver();
 }
 
 function setupLazyLoadObserver() {
     if (lazyLoadObserver) lazyLoadObserver.disconnect();
     const options = { root: null, rootMargin: '0px 0px 300px 0px', threshold: 0 };
     lazyLoadObserver = new IntersectionObserver((entries) => {
-        if (entries[entries.length - 1].isIntersecting) loadMoreIcons();
+        if (entries[entries.length - 1].isIntersecting) {
+            document.getElementById('keyboard-shortcuts').classList.add('hidden');
+            loadMoreIcons();
+        }
     }, options);
     const lastIcon = iconGrid.querySelector('.icon-container:last-child');
-    if (lastIcon) lazyLoadObserver.observe(lastIcon);
+    if (lastIcon) {
+        lazyLoadObserver.observe(lastIcon);
+    }
+
+    // Show shortcuts if the content is not scrollable
+    if (iconGrid.scrollHeight <= window.innerHeight) {
+        document.getElementById('keyboard-shortcuts').classList.remove('hidden');
+    } else {
+        document.getElementById('keyboard-shortcuts').classList.add('hidden');
+    }
 }
 
 function performSearch(searchTerm) {
@@ -529,6 +589,22 @@ function initialize() {
         const searchTerm = (e.state && e.state.searchTerm) ? e.state.searchTerm : '';
         searchInput.value = searchTerm;
         performSearch(searchTerm);
+    });
+
+    const backToTopBtn = document.getElementById('back-to-top-btn');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > window.innerHeight * 3) {
+            backToTopBtn.classList.add('visible');
+        } else {
+            backToTopBtn.classList.remove('visible');
+        }
+    });
+
+    backToTopBtn.addEventListener('click', () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
     });
 }
 
