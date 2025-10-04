@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" media="print" onload="this.media='all'">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
 </head>
 <body>
     <header>
@@ -40,15 +41,14 @@
                     <div class="settings-section">
                         <label for="density-toggle" class="fill-label">View</label>
                         <div class="segmented-control" id="density-control">
-                            <!-- TODO: replace with actual material icons, these are rendered weird  -->
                             <button data-density="comfortable" class="active" title="Comfortable">
-                                <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 0 24 24" width="20px"><path d="M4 11h5V5H4v6zm0 7h5v-6H4v6zm6 0h5v-6h-5v6zm6 0h5v-6h-5v6zm-6-7h5V5h-5v6zm6-7v6h5V5h-5z"/></svg>
+                                <span class="material-symbols-outlined">view_comfy</span>
                             </button>
                             <button data-density="cozy" title="Cozy">
-                                <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 0 24 24" width="20px"><path d="M2 4v16h20V4H2zm2 2h16v5H4V6zm0 12v-5h4v5H4zm6 0v-5h10v5H10z"/></svg>
+                                <span class="material-symbols-outlined">view_cozy</span>
                             </button>
                             <button data-density="compact" title="Compact">
-                                <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 0 24 24" width="20px"><path d="M3 19h6v-7H3v7zm7 0h12v-7H10v7zM3 5v7h18V5H3z"/></svg>
+                                <span class="material-symbols-outlined">view_compact</span>
                             </button>
                         </div>
                     </div>
@@ -76,8 +76,9 @@
                      <div class="color-picker-section">
                         <div class="section-header">
                             <h3>History</h3>
-                            <button id="clear-history-btn" class="clear-history-icon-btn" title="Clear History">&times;</button>
-                            <!-- TODO: use a trash can icon instead of an X -->
+                            <button id="clear-history-btn" class="clear-history-icon-btn" title="Clear History">
+                                <span class="material-symbols-outlined">delete</span>
+                            </button>
                         </div>
                         <div class="swatch-container" id="swatch-container"></div>
                     </div>

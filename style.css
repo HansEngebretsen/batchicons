@@ -236,9 +236,10 @@ header {
     border: none;
     color: var(--search-placeholder);
     cursor: pointer;
-    font-size: 1.5rem;
-    line-height: 1;
     padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .swatch-container {
@@ -465,17 +466,18 @@ body.dark-mode #moon-icon { display: block; }
     justify-content: center;
 }
 
-.segmented-control button svg {
-    fill: var(--text-color);
+.segmented-control button .material-symbols-outlined {
+    color: var(--text-color);
     pointer-events: none;
+    font-size: 20px;
 }
 
 .segmented-control button.active {
     background-color: var(--slider-thumb);
 }
 
-.segmented-control button.active svg {
-    fill: white;
+.segmented-control button.active .material-symbols-outlined {
+    color: white;
 }
 
 .icon-container.selected {
