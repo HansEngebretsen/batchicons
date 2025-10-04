@@ -40,3 +40,9 @@ A local web application designed for software engineers and designers to efficie
 *   **Frontend Focus:** This is a client-side application. All logic for searching, filtering, and packaging should be handled in the browser using JavaScript.
 *   **Icon Data:** The Material Icons library should be available locally (e.g., as a JSON file or a JavaScript module) to ensure fast, offline-first performance. The data structure should be optimized for quick lookups.
 *   **Dependencies:** Keep dependencies to a minimum. Consider a lightweight UI library like Preact or vanilla JavaScript for the core logic, and a library like `jszip` for creating the `.zip` file on the client side.
+
+
+## 4. TODO list
+If you get a todolist complete command, first of all search the codebase (focus on index.html and styles.css) for comments that start with "TODO" if you see them, follow their instructions and complete them. Then move on to the below  complete them, one by one - creating a git feature or bug branch for each then asking to merge it into the main branch: 
+1. None of the keyboard shortcuts should apply while in a text input. For example:  I hit excape while in an active text box (E.g. the search nav) this should NOT deselect my current icons 
+2. Optimize the way that resources are loaded and served to be super fast - so that we aren't serving latent or too large code. 
