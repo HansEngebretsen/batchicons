@@ -12,7 +12,7 @@
         <div class="header-left">
             <div class="site-title">
                 <h1>Many Icons</h1>
-                <p>Bulk Material icons</p>
+                <p>Batch downloader</p>
             </div>
             <div class="search-container">
                 <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -36,8 +36,9 @@
                         </label>
                     </div>
                     <div class="settings-section">
-                        <label for="density-toggle" class="fill-label">Density</label>
+                        <label for="density-toggle" class="fill-label">View</label>
                         <div class="segmented-control" id="density-control">
+                            <!-- TODO: replace with actual material icons, these are rendered weird  -->
                             <button data-density="comfortable" class="active" title="Comfortable">
                                 <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 0 24 24" width="20px"><path d="M4 11h5V5H4v6zm0 7h5v-6H4v6zm6 0h5v-6h-5v6zm6 0h5v-6h-5v6zm-6-7h5V5h-5v6zm6-7v6h5V5h-5z"/></svg>
                             </button>
@@ -64,18 +65,20 @@
             <div class="color-management">
                 <button id="color-picker-btn" class="color-picker-btn"></button>
                 <div id="color-picker-dropdown" class="color-picker-dropdown">
-                    <div class="color-picker-section">
-                        <div class="section-header">
-                            <h3>History</h3>
-                            <button id="clear-history-btn" class="clear-history-icon-btn" title="Clear History">&times;</button>
-                        </div>
-                        <div class="swatch-container" id="swatch-container"></div>
-                    </div>
+                    
                     <div class="color-picker-section">
                         <h3>Cool Colors</h3>
                         <div class="swatch-container" id="cool-colors-container"></div>
                     </div>
                      <input type="color" id="color-picker-input">
+                     <div class="color-picker-section">
+                        <div class="section-header">
+                            <h3>History</h3>
+                            <button id="clear-history-btn" class="clear-history-icon-btn" title="Clear History">&times;</button>
+                            <!-- TODO: use a trash can icon instead of an X -->
+                        </div>
+                        <div class="swatch-container" id="swatch-container"></div>
+                    </div>
                 </div>
             </div>
             <div class="theme-toggle-container">

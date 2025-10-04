@@ -32,7 +32,7 @@ body.dark-mode {
     --button-text: #e2e8f0;
     --icon-theme-color: #a0aec0;
     --selection-bar-bg: #2d3748;
-    --dropdown-bg: #4a5568;
+    --dropdown-bg: #313642;
     --dropdown-shadow: 0 8px 16px rgba(0,0,0,0.3);
     --slider-track: #718096;
     --slider-thumb: #4299e1;
@@ -207,6 +207,7 @@ header {
     transform: translateY(10px);
     pointer-events: none;
     transition: opacity 0.2s ease, transform 0.2s ease;
+    /* Todo: add a psuedo element that is a triangle outside the top right part of the box to indicate it's attachment to the menu. */
 }
 
 .color-picker-dropdown.visible, .settings-dropdown.visible {
@@ -219,12 +220,13 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 0.5rem;
+}
+.color-picker-section {
+    margin-bottom: 1em;
 }
 
 .color-picker-section h3, .settings-section h3 {
     font-size: 0.8rem;
-    margin: 0;
     color: var(--search-placeholder);
     text-transform: uppercase;
 }
@@ -262,6 +264,11 @@ header {
 #color-picker-input {
     width: 100%;
     box-sizing: border-box;
+    border-radius: 12px;
+    outline: none;
+    border: none;
+    background-color: var(--icon-theme-color);
+    margin-bottom: 1em;
 }
 
 .settings-section {
@@ -639,6 +646,16 @@ body.dark-mode #moon-icon { display: block; }
     display: flex;
     gap: 1.5rem;
     color: var(--search-placeholder);
+    border: 1px solid:
+    /* TODO: Media query for at 750px , add the following
+    border: 1px solid var(--icon-theme-color);
+    border-top: none;
+    border-bottom: none;
+    padding: 0 15px;
+    margin: 0 15px;
+     */
+
+     /* TODO: Media query for at 560 pixels, stack things so that the icon count and 'via material icons' line are on the bottom and the keyboard shortcuts are on top  */
 }
 
 .keyboard-shortcuts kbd {
