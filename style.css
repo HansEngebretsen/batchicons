@@ -207,7 +207,18 @@ header {
     transform: translateY(10px);
     pointer-events: none;
     transition: opacity 0.2s ease, transform 0.2s ease;
-    /* Todo: add a psuedo element that is a triangle outside the top right part of the box to indicate it's attachment to the menu. */
+}
+
+.color-picker-dropdown::before, .settings-dropdown::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid var(--dropdown-bg);
 }
 
 .color-picker-dropdown.visible, .settings-dropdown.visible {
