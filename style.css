@@ -617,6 +617,16 @@ body.dark-mode #moon-icon { display: block; }
     margin-top: 0;
 }
 
+.help-dialog .help-license {
+    font-size: 0.85rem;
+    color: var(--search-placeholder);
+}
+
+.help-dialog .help-license a {
+    color: inherit;
+    text-decoration: underline;
+}
+
 .help-dialog table {
     width: 100%;
     border-collapse: collapse;
