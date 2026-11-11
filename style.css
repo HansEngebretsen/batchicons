@@ -591,7 +591,15 @@ body.dark-mode #moon-icon { display: block; }
     box-shadow: var(--dropdown-shadow);
     max-width: 400px;
     width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
     position: relative;
+}
+
+/* Shared "made by hans" footer at the foot of the help dialog */
+.help-dialog hans-footer {
+    display: block;
+    margin-top: 1.5rem;
 }
 
 .close-help-btn {
