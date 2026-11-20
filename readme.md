@@ -1,6 +1,6 @@
 # `batchicons`
 
-Pick a whole set of Material icons in a few clicks and take them all with you: one copy for every SVG, or one download as a zip.
+One-click bulk SVG icon search and download. Pick a whole set of Material icons in a few clicks and take them all with you: one copy for every SVG, or one download as a zip.
 
 
 <div align="center">
