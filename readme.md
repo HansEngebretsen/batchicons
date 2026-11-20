@@ -19,47 +19,34 @@ One-click bulk SVG icon search and download. Pick a whole set of Material icons 
 <table>
 <tr valign="top">
 <td width="50%">
-<h3>Click to collect</h3>
-<p>Every click adds an icon to your set, and the counter keeps a running total. Click again or hit the × to drop one.</p>
+<h3>Icon cart that follows you around</h3>
 </td>
 <td width="50%">
-<img src="demos/select.gif" alt="Click to collect">
-</td>
-</tr>
-<tr valign="top">
-<td width="50%">
-<img src="demos/range.gif" alt="Shift-click a whole range">
-</td>
-<td width="50%">
-<h3>Shift-click a whole range</h3>
-<p>Click one icon, then shift-click another, and everything in between joins the set at once.</p>
+<img src="demos/select.gif" alt="Icon cart that follows you around">
 </td>
 </tr>
 <tr valign="top">
 <td width="50%">
-<h3>Search for several at once</h3>
-<p>Separate terms with commas to see them all in one grid. Your picks stay selected from search to search, so you can build a set from anywhere.</p>
+<img src="demos/range.gif" alt="Basic utilities, like shift + click">
 </td>
 <td width="50%">
-<img src="demos/search.gif" alt="Search for several at once">
-</td>
-</tr>
-<tr valign="top">
-<td width="50%">
-<img src="demos/style.gif" alt="Set the style for the whole batch">
-</td>
-<td width="50%">
-<h3>Set the style for the whole batch</h3>
-<p>Switch to filled icons, change the weight or the optical size, or pick a color. Every icon changes together, and that's the version you export.</p>
+<h3>Basic utilities, like shift + click</h3>
 </td>
 </tr>
 <tr valign="top">
 <td width="50%">
-<h3>Copy or download them all</h3>
-<p>One click copies every selected SVG, and one more downloads them as a single zip. With the keyboard it's <kbd>c</kbd> or <kbd>d</kbd>.</p>
+<h3>Comma-driven multi-search</h3>
 </td>
 <td width="50%">
-<img src="demos/export.gif" alt="Copy or download them all">
+<img src="demos/search.gif" alt="Comma-driven multi-search">
+</td>
+</tr>
+<tr valign="top">
+<td width="50%">
+<img src="demos/style.gif" alt="Quick styles">
+</td>
+<td width="50%">
+<h3>Quick styles</h3>
 </td>
 </tr>
 </table>
